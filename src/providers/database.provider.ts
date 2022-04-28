@@ -5,9 +5,9 @@ import { createConnection } from 'typeorm';
 export class DatabaseProvider {
   constructor() {
     return createConnection()
-      .then((conn) => {
+      .then(({ isConnected }) => {
         console.log(
-          `[Nest] 5432 - ${Date.now()} Database Connection Established: ${conn}}`,
+          `[Nest] 5432  - ${Date()} LOG [DatabaseConnection] Connection Established: ${isConnected}`,
         );
       })
       .catch((err) => {

@@ -1,42 +1,59 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { RoleService } from '../../services/role.service';
+import RoleGuard from 'src/acl/role.guard';
+import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { CreateRoleDto } from 'src/dto/create-role.dto';
 import { UpdateRoleDto } from 'src/dto/update-role.dto';
+import Role from 'src/enums/role.enum';
+import { RoleService } from 'src/services/role.service';
 
-@Controller('role')
+@UsePipes(ValidationPipe)
+@Controller('roles')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @Post()
-  create(@Body() createRoleDto: CreateRoleDto) {
-    return this.roleService.create(createRoleDto);
-  }
-
   @Get()
+  @UseGuards(LocalAuthGuard)
+  @UseGuards(RoleGuard(Role.Administrator))
   findAll() {
     return this.roleService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roleService.findOne(+id);
+  @UseGuards(LocalAuthGuard)
+  @UseGuards(RoleGuard(Role.Administrator))
+  findOne(@Param('id') id: number) {
+    return this.roleService.findOne(id);
+  }
+
+  @Post()
+  @UseGuards(LocalAuthGuard)
+  @UseGuards(RoleGuard(Role.Administrator))
+  create(@Body() createRoleDto: CreateRoleDto) {
+    return this.roleService.create(createRoleDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
-    return this.roleService.update(+id, updateRoleDto);
+  @UseGuards(LocalAuthGuard)
+  @UseGuards(RoleGuard(Role.Administrator))
+  update(@Param('id') id: number, @Body() updateRoleDto: UpdateRoleDto) {
+    return this.roleService.update(id, updateRoleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roleService.remove(+id);
+  @UseGuards(LocalAuthGuard)
+  @UseGuards(RoleGuard(Role.Administrator))
+  remove(@Param('id') id: number) {
+    return this.roleService.remove(id);
   }
 }

@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection, getConnectionOptions } from 'typeorm';
 import { UserModule } from './user.module';
 import { AuthModule } from './auth.module';
+import { RoleModule } from './role.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthModule } from './auth.module';
         }),
     }),
     UserModule,
+    RoleModule,
     AuthModule,
   ],
   controllers: [AppController],

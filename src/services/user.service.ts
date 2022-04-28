@@ -25,6 +25,12 @@ export class UserService {
     return await this.userRepository.findOneOrFail({ where: { email: email } });
   }
 
+  async findOneByUsername(username: string): Promise<User> {
+    return await this.userRepository.findOneOrFail({
+      where: { username: username },
+    });
+  }
+
   async update(
     id: number,
     updateUserDto: UpdateUserDto,
